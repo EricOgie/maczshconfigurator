@@ -58,11 +58,10 @@ handle_error() {
 
 
 execute_command() {
-    local cmd="$*"
     local output
 
     # Execute the command and capture any output or error message
-    output=$($cmd 2>&1) || handle_error "Command failed: $cmd : Msg: $output"
+    output=$("$@" 2>&1) || handle_error "Command failed: $* : Msg: $output"
     echo "$output"
 }
 
