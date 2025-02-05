@@ -292,13 +292,12 @@ install_colorls() {
 
         fi
 
-        # Ensure rbenv initialized in each terminal session 
+        # Ensure rbenv initialized in each terminal session
         echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc
-        source ~/.zshrc
 
         # If rbenv is used to install a compartible ruby (as seen above), we may have a situation where two ruby versions exist in parallel -
         # System installed ruby and rbenv managed ruby. 
-        # When Ruby gems are installed, bash will naturally default to the system installed Ruby (whose version may be < min req) 
+        # When Ruby gems are installed, bash will naturally default to the system installed Ruby (whose version may be < the min required) 
         # To ensure rbenv Ruby is use for gem installations, we init rbenv in the running bash session
         echo "Initialized rbenv in current bash session..."
         if command_exists rbenv; then
