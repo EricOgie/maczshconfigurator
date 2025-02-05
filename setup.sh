@@ -139,19 +139,32 @@ install_prerequisites() {
     fi
 
     # Setup Zsh as default shell if not set
-    if [[ "$SHELL" != *"zsh" ]]; then
-        echo "Default login shell is not zsh. Configuring zsh as default shell for $USER..."
-        execute_command chsh -s $(which zsh)
+    if [[ "$SHELL" != *"zsh" && "$SHELL" != "$(which zsh)" ]]; then
+        echo "Default login shell is not zsh. Configuring zsh as default shell for user, $USER..."
+        # Change to MacOs pre installed zsh and fallback to package manager installed zsh if no pre-installed zsh exist
+        if [[ -x "/bin/zsh" ]]; then
+            ZSH="/bin/zsh"
+        else
+            ZSH="$(which zsh)"  # Fallback to Homebrew-installed Zsh
+        fi
+
+        execute_command sudo chsh -s "$ZSH"
+
         echo "zsh shell now default login shell for $USER"
         echo
     fi
 
     # Backup ~/.zshrc file for rollback purposes
     if [ -f "$HOME/.zshrc" ]; then
-        echo "Saving the default $HOME/.zshrc file content to $BACKUP_ZSHRC"
-        mkdir -p $BACKUP_DIR && cp $DEFAULT_ZSHRC $BACKUP_ZSHRC
-        echo "$HOME/.zshrc Backed up at $BACKUP_ZSHRC."
-        echo
+        echo "Saving the default $DEFAULT_ZSHRC file content to $BACKUP_ZSHRC"
+
+        # Ensure the backup directory exists
+        execute_command mkdir -p "$BACKUP_DIR"
+
+        # Copy the .zshrc file to the backup location
+        execute_command cp "$DEFAULT_ZSHRC" "$BACKUP_ZSHRC"
+        echo "$DEFAULT_ZSHRC backed up at $BACKUP_ZSHRC."
+
     else
         echo "No existing .zshrc file found - No backup needed"
     fi
