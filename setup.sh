@@ -25,12 +25,6 @@ CURRENT_RUBY_VERSION=$(ruby -v | awk '{print $2}' | sed 's/[a-zA-Z].*//')
 # Compute the lower version between CURRENT_RUBY_VERSION and MIN_RUBY_VERSION
 LOWER_VERSION=$(printf '%s\n%s\n' "$CURRENT_RUBY_VERSION" "$MIN_RUBY_VERSION" | sort -V | head -n 1)
 
-DEFAULT_ZSHRC="$HOME/.zshrc"
-
-# ~/.zshrc file backup location
-BACKUP_DIR="$HOME/AMZC-backups"
-BACKUP_ZSHRC="$BACKUP_DIR/.zshrc.bak_$(date +%Y%m%d_%H%M%S)"
-
 # Login User and User home
 USER=${USER:-$(id -u -n)}
 HOME="${HOME:-$(eval echo ~$USER)}"
@@ -152,21 +146,6 @@ install_prerequisites() {
 
         echo "zsh shell now default login shell for $USER"
         echo
-    fi
-
-    # Backup ~/.zshrc file for rollback purposes
-    if [ -f "$HOME/.zshrc" ]; then
-        echo "Saving the default $DEFAULT_ZSHRC file content to $BACKUP_ZSHRC"
-
-        # Ensure the backup directory exists
-        execute_command mkdir -p "$BACKUP_DIR"
-
-        # Copy the .zshrc file to the backup location
-        execute_command cp "$DEFAULT_ZSHRC" "$BACKUP_ZSHRC"
-        echo "$DEFAULT_ZSHRC backed up at $BACKUP_ZSHRC."
-
-    else
-        echo "No existing .zshrc file found - No backup needed"
     fi
 
 }
