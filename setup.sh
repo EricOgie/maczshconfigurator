@@ -65,6 +65,26 @@ execute_command() {
     echo "$output"
 }
 
+run_remote_installer(){
+
+    local installerUrl="$1"
+    local installerOption=${2:-""}
+    local installerScript
+
+    # create tmp location for installer
+    installerScript=$(mktemp) || { echo "Failed to create tmp file for installer"; return 1; }
+
+    # Download installer script
+    execute_command curl -fsSL "$installerUrl" -o "$installerScript" || { rm -f "$installerScript"; return 1; }
+
+    # Run installer script
+    execute_command /bin/bash "$installerScript" "$installerOption"
+
+    # Cleanup
+    rm -f "$installerScript"
+
+}
+
 can_sudo() {
     # This function checks if the user can use the sudo command.
     # It performs two checks:
@@ -101,7 +121,9 @@ install_prerequisites() {
     # Check if Homebrew is installed - Install if not
     if ! command_exists brew; then
         echo "Homebrew not found. Installing Homebrew..."
-        execute_command /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+        run_remote_installer "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+
         # Run update
         execute_command brew update
 
@@ -140,10 +162,13 @@ install_prerequisites() {
 install_oh_my_zsh() {
      # Install Oh-my-zsh
     print_section_header "oh-my-zsh"
-    if [ ! -d "$HOME/.oh-my-zsh" ]; then 
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "Installing oh-my-zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+        run_remote_installer "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" "--unattended"
+ 
         print_finish_feedback  oh-my-zsh
+
     else
         echo "Oh-My-Zsh is already installed."
     fi
@@ -158,7 +183,7 @@ install_themes_and_fonts() {
     if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
         echo "Installing Powerlevel10k theme..."
         execute_command git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-        
+
         # Set the theme to Powerlevel10k in ~/.zshrc file
         sed -i '' 's/^ZSH_THEME=".*"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
 
@@ -172,19 +197,21 @@ install_themes_and_fonts() {
 
     # Install and configure Nerd Fonts
     if [ ! -f "$HOME/Library/Fonts/HackNerdFont-Regular.ttf" ]; then
+
         echo "Installing Hack Nerd Font..."
         execute_command env HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask font-hack-nerd-font
+
         print_finish_feedback  "Hack Nerd Font"
     else
         echo "Hack Nerd Font already installed"
     fi
 
     # Update iTerm2 preferences to use Hack Nerd Font
-    echo "Configuring Iterm2 to use Hack Nerd Font for Non Ascii Font"
+    echo "Configuring Iterm2 to use Hack Nerd Font for Non Ascii Fonts"
     # Set Non-ASCII Font
     defaults write com.googlecode.iterm2 "Non Ascii Font" -string "HackNF-Regular 12"
     # Set Normal Font
-    defaults write com.googlecode.iterm2 "Normal Font" -string "MesloLGS-NF-Regular 13" 
+    defaults write com.googlecode.iterm2 "Normal Font" -string "MesloLGS-NF-Regular 13"
     # Ensure Non-ASCII Font usage is enabled
     defaults write com.googlecode.iterm2 "Use Non-ASCII Font" -bool true
 }
@@ -197,13 +224,14 @@ install_plugins() {
     if [ ! -d "$PLUGINS_DIR/zsh-syntax-highlighting" ]; then
         echo "Installing zsh-syntax-highlighting..."
         execute_command git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
         print_finish_feedback  "zsh-syntax-highlighting"
     else
         echo "zsh-syntax-highlighting is already installed"
         echo "Moving on to other installations..."
         echo
     fi
-    
+
     if [ ! -d "$PLUGINS_DIR/zsh-autosuggestions" ]; then
         # - Install zsh-autosuggestions
         echo
@@ -270,7 +298,7 @@ install_colorls() {
    
     fi
 
-    
+
     if ! (grep -q "alias ls=colorls" ~/.zshrc || grep -q "alias ls='colorls'" ~/.zshrc); then
         # Prompt user to add alias ls=colorls
         read -p "Would you like to set up 'ls' alias to use colorls? (y/n): " setup_alias
