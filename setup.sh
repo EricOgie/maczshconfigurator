@@ -1,10 +1,10 @@
 #! /bin/bash
 #
 # This script should be run using curl:
-# bash -c "$(curl -fsSL https://raw.githubusercontent.com/EricOgie/auto-mac-zsh-config/main/setup.sh)"
+# bash -c "$(curl -fsSL https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh)"
 
 # or using wget:
-# bash -c "$(wget -qO- https://raw.githubusercontent.com/EricOgie/auto-mac-zsh-config/main/setup.sh)"
+# bash -c "$(wget -qO- https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh)"
 
 # For a more personalised usage, you can download the setup.sh script, tweak  and run afterward.
 #

@@ -1,6 +1,6 @@
-# Auto Zsh Config for MacOS
+# Mac Zsh Configurator
 
-Auto Zsh Config for MacOS is a bash script that automates the setup of a highly functional and visually appealing Zsh environment on macOS.  
+Mac Zsh Configurator is a bash script that automates the setup of a highly functional and visually appealing Zsh environment on macOS.  
 It capitalises on existing powerful terminal window enhancement tools like [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) and [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) plugin.
 
 Once run on your Mac, it will embellish your shell terminal with useful capabilities that will make your developer experience fun and smooth.  
@@ -79,22 +79,22 @@ For quick use of this script, you can run any of the followin commands on your t
 
 **Using cURL**
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/EricOgie/auto-mac-zsh-config/main/setup.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh)"
 ```
 
 **Using wget**  
 You can use this option if you have ` wget ` installed in you macOS.
 ```bash
-bash -c "$(wget -qO- https://raw.githubusercontent.com/EricOgie/auto-mac-zsh-config/main/setup.sh)"
+bash -c "$(wget -qO- https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh)"
 ```
 
 ### Inspect Before Use
 If you would like to inspect the script to understand what it does before installing, you can use the URL below to inspect the raw script.  
-[https://raw.githubusercontent.com/EricOgie/auto-mac-zsh-config/main/setup.sh](https://raw.githubusercontent.com/EricOgie/auto-mac-zsh-config/main/setup.sh)
+[https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh](https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh)
 
 You can also clone the project for a more robust look around.
 ```
-git clone https://github.com/EricOgie/auto-mac-zsh-config.git
+git clone https://github.com/EricOgie/maczshconfigurator.git
 ```
 
 ## Want to Contribute?
