@@ -10,7 +10,13 @@
 #
 set -e
 
-source ./colors.sh
+# Define color functions
+blue() { printf "\e[34m%s\e[0m\n" "$1"; }
+green() { printf "\e[32m%s\e[0m\n" "$1"; }
+red() { printf "\e[31m%s\e[0m\n" "$1"; }
+yellow() { printf "\e[33m%s\e[0m\n" "$1"; }
+info() { printf "\e[34m%s\e[0m\n" "$1"; }
+
 # Ensure required variables exist.
 # Establish a min ruby version of 3.1.0
 MIN_RUBY_VERSION="3.1.0"
