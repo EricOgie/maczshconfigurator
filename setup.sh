@@ -12,9 +12,13 @@ set -e
 
 # Define color functions
 blue() { printf "\e[34m%s\e[0m\n" "$1"; }
+
 green() { printf "\e[32m%s\e[0m\n" "$1"; }
+
 red() { printf "\e[31m%s\e[0m\n" "$1"; }
+
 yellow() { printf "\e[33m%s\e[0m\n" "$1"; }
+
 info() { printf "\e[34m%s\e[0m\n" "$1"; }
 
 # Ensure required variables exist.
@@ -38,7 +42,6 @@ PLUGINS_DIR=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/
 # Iterms appendded to this array should be in key-value pair formatted as "tool_name=action_done". e.g., "Zsh=Set as user default shell"
 tools_installed=()
 
-
 command_exists(){
     # Check if a command is available on the system.
     #
@@ -51,13 +54,11 @@ command_exists(){
     command -v "$@" > /dev/null 2>&1 
 }
 
-
 handle_error() {
     # Print the error message using formatted output
     red "Error: $1" >&2
     exit 1
 }
-
 
 execute_command() {
     # This function executes a command passed as arguments and captures its output or error message.
@@ -96,7 +97,6 @@ run_remote_installer(){
 
     # Cleanup
     rm -f "$installerScript"
-
 }
 
 can_sudo() {
@@ -128,7 +128,6 @@ print_finish_feedback () {
     green "✅ Successfully installed $1"
     echo
 }
-
 
 install_prerequisites() {
     print_section_header "Preliminary Checks and Configurations" "Running"
@@ -219,9 +218,7 @@ install_prerequisites() {
         info "zsh shell is set as default login shell for $USER"
         echo
     fi
-
 }
-
 
 install_oh_my_zsh() {
      # Install Oh-my-zsh
@@ -246,9 +243,7 @@ install_oh_my_zsh() {
     fi
 }
 
-
 install_themes_and_fonts() {
-
     print_section_header "Themes and Fonts"
 
     # Install Powerlevel10k theme
@@ -294,9 +289,7 @@ install_themes_and_fonts() {
         defaults write com.googlecode.iterm2 "Use Non-ASCII Font" -bool true
 
     fi
-
 }
-
 
 install_plugins() {
     print_section_header "Plugins"
@@ -330,7 +323,6 @@ install_plugins() {
 
     # Add plugins to .zshrc
     sed -i '' 's/^plugins=(.*)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' ~/.zshrc
-
 }
 
 install_colorls() {
@@ -386,7 +378,6 @@ install_colorls() {
    
     fi
 
-
     if ! (grep -q "alias ls=colorls" ~/.zshrc || grep -q "alias ls='colorls'" ~/.zshrc); then
         # Prompt user to add alias ls=colorls
         blue "Would you like to set up 'ls' alias to use colorls? (y/n): "
@@ -402,7 +393,6 @@ install_colorls() {
             echo "Skipping alias setup..."
          fi
     fi
-
 }
 
 print_success_message() {
@@ -433,9 +423,7 @@ print_success_message() {
     blue "Restart your terminal and follow Powerlevel10k configuration wizard to customize your terminal looks"
 }
 
-
 main() {
-
     can_sudo
 
     install_prerequisites
@@ -449,7 +437,6 @@ main() {
     install_colorls
     
     print_success_message
-  
 }
 
 
