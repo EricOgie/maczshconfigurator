@@ -329,12 +329,12 @@ install_colorls() {
     print_section_header "colorls"
     if ! command_exists colorls; then
 
-        # Check if CURRENT_RUBY_VERSION meets the min requirment of 3.1.0. If not, Install a compartible version using rbenv.
+        # Check if CURRENT_RUBY_VERSION meets the min requirement of 3.1.0. If not, Install a compatible version using rbenv.
         # Note: CURRENT_RUBY_VERSION here is system installed ruby version.
         if [[ "$LOWER_VERSION" != "$MIN_RUBY_VERSION" ]]; then
 
             yellow "Your current Ruby version, $CURRENT_RUBY_VERSION is below the minimum required version, $MIN_RUBY_VERSION."
-            info "Installing a compartible Ruby version..."
+            info "Installing a compatible Ruby version..."
             echo 
 
             if ! command_exists rbenv ; then
@@ -361,7 +361,7 @@ install_colorls() {
         # Ensure rbenv initialized in each terminal session
         echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc
 
-        # If rbenv is used to install a compartible ruby (as seen above), we may have a situation where two ruby versions exist in parallel -
+        # If rbenv is used to install a compatible ruby (as seen above), we may have a situation where two ruby versions exist in parallel -
         # System installed ruby and rbenv managed ruby. 
         # When Ruby gems are installed, bash will naturally default to the system installed Ruby (whose version may be < the min required) 
         # To ensure rbenv Ruby is use for gem installations, we init rbenv in the running bash session
@@ -371,7 +371,16 @@ install_colorls() {
         fi
 
         # Install colorls
-        execute_command sudo gem install colorls
+        RUBY_PATH="$(which ruby)"
+
+        if [[ "$RUBY_PATH" == *".rbenv"* ]]; then
+            info "Installing colorls using rbenv Ruby..."
+            execute_command gem install colorls
+        else
+            info "Installing colorls using system Ruby (sudo required)..."
+            execute_command sudo gem install colorls
+        fi
+
         tools_installed+=("Colorls=✅ Installed successfully")
 
         print_finish_feedback  "colorls"
