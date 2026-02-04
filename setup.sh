@@ -359,7 +359,10 @@ install_colorls() {
         fi
 
         # Ensure rbenv initialized in each terminal session
-        echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.zshrc
+        RBENV_INIT_LINE='if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi'
+        if ! grep -Fq "$RBENV_INIT_LINE" ~/.zshrc 2>/dev/null; then
+            echo "$RBENV_INIT_LINE" >> ~/.zshrc
+        fi
 
         # If rbenv is used to install a compatible ruby (as seen above), we may have a situation where two ruby versions exist in parallel -
         # System installed ruby and rbenv managed ruby. 
