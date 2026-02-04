@@ -390,7 +390,7 @@ install_colorls() {
    
     fi
 
-    if ! (grep -q "alias ls=colorls" ~/.zshrc || grep -q "alias ls='colorls'" ~/.zshrc); then
+    if ! grep -Eq '^\s*alias\s+ls=.*colorls' ~/.zshrc 2>/dev/null; then
         # Prompt user to add alias ls=colorls
         blue "Would you like to set up 'ls' alias to use colorls? (y/n): "
         read setup_alias
