@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 #
 # This script should be run using curl:
 # bash -c "$(curl -fsSL https://raw.githubusercontent.com/EricOgie/maczshconfigurator/main/setup.sh)"
@@ -35,11 +35,11 @@ LOWER_VERSION=$(printf '%s\n%s\n' "$CURRENT_RUBY_VERSION" "$MIN_RUBY_VERSION" | 
 
 # Login User and User home
 USER=${USER:-$(id -u -n)}
-HOME="${HOME:-$(eval echo ~$USER)}"
+HOME="${HOME:-$(eval echo ~"$USER")}"
 PLUGINS_DIR=${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/
 
-# Array to keep track of tools and their correspondings action
-# Iterms appendded to this array should be in key-value pair formatted as "tool_name=action_done". e.g., "Zsh=Set as user default shell"
+# Array to keep track of tools and their corresponding action
+# Items appended to this array should be in key-value pair formatted as "tool_name=action_done". e.g., "Zsh=Set as user default shell"
 tools_installed=()
 
 command_exists(){
@@ -168,6 +168,7 @@ install_prerequisites() {
         esac
 
         # Add Homebrew to PATH
+        # shellcheck disable=SC2016
         echo 'eval "$('$BREW_PREFIX'/bin/brew shellenv)"' >> "$SHELL_CONFIG"
         
         # Apply changes immediately
@@ -175,8 +176,6 @@ install_prerequisites() {
 
         if ! command_exists brew; then
             handle_error "❌ Could not install homebrew successfully. Please visit https://brew.sh/ for details on how to install Homebrew on your machine."
-            exit 1 
-            
         fi
 
         # Run update
@@ -249,7 +248,7 @@ install_themes_and_fonts() {
     # Install Powerlevel10k theme
     if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
         info "Installing Powerlevel10k theme..."
-        execute_command git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+        execute_command git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/themes/powerlevel10k
 
         # Set the theme to Powerlevel10k in ~/.zshrc file
         sed -i '' 's/^ZSH_THEME=".*"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
@@ -297,7 +296,7 @@ install_plugins() {
     # - Install zsh-syntax-highlighting
     if [ ! -d "$PLUGINS_DIR/zsh-syntax-highlighting" ]; then
         info "Installing zsh-syntax-highlighting..."
-        execute_command git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+        execute_command git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting
 
         tools_installed+=("zsh-syntax-highlighting Plugin=✅ Installed successfully")
 
@@ -312,7 +311,7 @@ install_plugins() {
         # - Install zsh-autosuggestions
         echo
         info "Installing zsh-autosuggestions..."
-        execute_command git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+        execute_command git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
         tools_installed+=("zsh-autosuggestions=✅ Installed successfully")
 
         print_finish_feedback  "zsh-autosuggestions"
@@ -359,6 +358,7 @@ install_colorls() {
         fi
 
         # Ensure rbenv initialized in each terminal session
+        # shellcheck disable=SC2016
         RBENV_INIT_LINE='if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi'
         if ! grep -Fq "$RBENV_INIT_LINE" ~/.zshrc 2>/dev/null; then
             echo "$RBENV_INIT_LINE" >> ~/.zshrc
@@ -393,7 +393,7 @@ install_colorls() {
     if ! grep -Eq '^\s*alias\s+ls=.*colorls' ~/.zshrc 2>/dev/null; then
         # Prompt user to add alias ls=colorls
         blue "Would you like to set up 'ls' alias to use colorls? (y/n): "
-        read setup_alias
+        read -r setup_alias
 
         # Check user's response and respond accordingly
          if [[ $setup_alias == "y" || $setup_alias == "Y" ]]; then
@@ -408,7 +408,7 @@ install_colorls() {
 }
 
 print_success_message() {
-    # Prints a success message block upon successfull completion, 
+    # Prints a success message block upon successfully completion,
     # along with a formatted table that lists the tools installed and actions performed.
     echo
     echo
@@ -417,8 +417,10 @@ print_success_message() {
 
     blue "Take a look at your Trophies 🏆🏆🏆 below"
     # Print Headers
+    # shellcheck disable=SC2183
     printf "%-87s\n" | tr ' ' '-'
     printf "| %-3s | %-32s | %-42s |\n" "S/N" "Tools" "Action Done"
+    # shellcheck disable=SC2183
     printf "%-87s\n" | tr ' ' '-'
 
     # Populate table installed tool's table
@@ -430,6 +432,7 @@ print_success_message() {
         printf "| %-3d | %-32s | %-43s |\n" "$((i + 1))" "$tool" "$action_done"
     done
 
+    # shellcheck disable=SC2183
     printf "%-87s\n" | tr ' ' '-'
     echo
     blue "Restart your terminal and follow Powerlevel10k configuration wizard to customize your terminal looks"
